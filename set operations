@@ -1,0 +1,44 @@
+# Define two sets
+setA = {1, 2, 3, 4, 5}
+setB = {4, 5, 6, 7, 8}
+
+print("Set A:", setA)
+print("Set B:", setB)
+
+# 1. Union
+union_result = setA.union(setB)  
+print("Union (A ∪ B):", union_result)
+
+# 2. Intersection
+intersection_result = setA.intersection(setB)  
+print("Intersection (A ∩ B):", intersection_result)
+
+# 3. Difference
+diff_A_B = setA.difference(setB)  
+diff_B_A = setB.difference(setA)  
+print("Difference (A - B):", diff_A_B)
+print("Difference (B - A):", diff_B_A)
+
+# 4. Symmetric Difference
+sym_diff = setA.symmetric_difference(setB)  
+print("Symmetric Difference (A Δ B):", sym_diff)
+
+# 5. Membership Test
+element = 3
+if element in setA:
+    print(f"{element} is in Set A")
+else:
+    print(f"{element} is NOT in Set A")
+
+# 6. Iteration over Set
+print("Elements in Set B:")
+for item in setB:
+    print(item, end=" ")
+print()
+
+# 7. Add & Remove Elements
+setA.add(10)
+print("Set A after add(10):", setA)
+
+setB.remove(6)
+print("Set B after remove(6):", setB)
