@@ -1,0 +1,30 @@
+my_list = [10, 20, 30]
+print("Original List:", my_list)
+
+# 1. Append 
+my_list.append(40)
+print("After append(40):", my_list)
+
+# 2. Insert 
+my_list.insert(1, 15)   # Insert 15 at index 1
+print("After insert(1, 15):", my_list)
+
+# 3. Extend 
+my_list.extend([50, 60, 70])
+print("After extend([50, 60, 70]):", my_list)
+
+# 4. Delete using pop 
+removed_element = my_list.pop(2)   
+print(f"After pop(2), removed element = {removed_element}: {my_list}")
+
+# 5. Delete using remove 
+my_list.remove(60)   
+print("After remove(60):", my_list)
+
+# 6. Delete using del statement
+del my_list[0]   
+print("After del my_list[0]:", my_list)
+
+# 7. Clear the entire list
+my_list.clear()
+print("After clear():", my_list)
