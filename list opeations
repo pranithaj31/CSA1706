@@ -1,0 +1,55 @@
+# 1. Nested List
+list1 = [1, 2, [3, 4], 5]
+print("Nested List:", list1)
+
+# 2. Length of List (
+count = 0
+for _ in list1:
+    count += 1
+print("Length of List:", count)
+
+# 3. Concatenation 
+list2 = [6, 7, 8]
+concat_list = []
+for item in list1:
+    concat_list.append(item)
+for item in list2:
+    concat_list.append(item)
+print("Concatenation Result:", concat_list)
+
+# 4. Membership 
+search_element = 4
+found = False
+for item in concat_list:
+    # If item is a list, check inside
+    if type(item) == list:
+        for sub in item:
+            if sub == search_element:
+                found = True
+                break
+    elif item == search_element:
+        found = True
+        break
+print(f"Is {search_element} in the list?", found)
+
+# 5. Iteration
+print("Iterating through concat_list:")
+for item in concat_list:
+    print(item, end=" ")
+print()
+
+# 6. Indexing
+index_position = 3
+pos = 0
+element_at_index = None
+for item in concat_list:
+    if pos == index_position:
+        element_at_index = item
+        break
+    pos += 1
+print(f"Element at index {index_position}:", element_at_index)
+
+# 7. Slicing 
+start = 2
+end = 6
+print(f"Sliced list from index {start} to {end-1}:", concat_list[start:end])
