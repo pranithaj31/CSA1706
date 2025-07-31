@@ -1,0 +1,11 @@
+a=int(input("enter the value of a:"))
+b=int(input("enter the value of b:"))
+c=int(input("enter the value of c:"))
+
+add=a+b+c
+sub=a-b-c
+mul=a*b*c
+
+print("addition:",add)
+print("subtraction:",sub)
+print("multiplication:",mul)
