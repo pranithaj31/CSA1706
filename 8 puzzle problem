@@ -1,0 +1,83 @@
+import heapq
+
+# Goal state
+goal_state = [[1, 2, 3], 
+              [4, 5, 6], 
+              [7, 8, 0]]  
+
+# Find position of a value in the puzzle
+def find_position(puzzle, value):
+    for i in range(3):
+        for j in range(3):
+            if puzzle[i][j] == value:
+                return (i, j)
+
+# Heuristic: Manhattan Distance
+def manhattan_distance(state):
+    distance = 0
+    for i in range(3):
+        for j in range(3):
+            if state[i][j] != 0:
+                goal_x, goal_y = find_position(goal_state, state[i][j])
+                distance += abs(i - goal_x) + abs(j - goal_y)
+    return distance
+
+# Generate possible moves
+def get_neighbors(state):
+    neighbors = []
+    x, y = find_position(state, 0)  # blank position
+    moves = [(0,1), (1,0), (0,-1), (-1,0)]  # right, down, left, up
+    
+    for dx, dy in moves:
+        new_x, new_y = x + dx, y + dy
+        if 0 <= new_x < 3 and 0 <= new_y < 3:
+            new_state = [row[:] for row in state]  # copy
+            new_state[x][y], new_state[new_x][new_y] = new_state[new_x][new_y], new_state[x][y]
+            neighbors.append(new_state)
+    return neighbors
+
+# Convert puzzle to tuple for hashing
+def puzzle_to_tuple(state):
+    return tuple(tuple(row) for row in state)
+
+# A* Search
+def solve_puzzle(start_state):
+    pq = []
+    heapq.heappush(pq, (0 + manhattan_distance(start_state), 0, start_state, []))
+    visited = set()
+
+    while pq:
+        f, g, state, path = heapq.heappop(pq)
+        
+        if state == goal_state:
+            return path
+        
+        visited.add(puzzle_to_tuple(state))
+        
+        for neighbor in get_neighbors(state):
+            if puzzle_to_tuple(neighbor) not in visited:
+                heapq.heappush(pq, 
+                               (g + 1 + manhattan_distance(neighbor), g + 1, neighbor, path + [neighbor]))
+    return None
+
+# Main Program
+start_state = [[1, 2, 3],
+               [4, 0, 6],
+               [7, 5, 8]]
+
+print("Initial State:")
+for row in start_state:
+    print(row)
+
+solution = solve_puzzle(start_state)
+
+if solution:
+    print("\nSolution Found in", len(solution), "moves!")
+    step = 1
+    for state in solution:
+        print(f"\nStep {step}:")
+        for row in state:
+            print(row)
+        step += 1
+else:
+    print("No solution exists!")
