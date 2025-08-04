@@ -1,0 +1,39 @@
+def vacuum_cleaner_agent(location, status):
+    """
+    Simple reflex agent for vacuum cleaner problem.
+    location: current location of the agent ('A' or 'B')
+    status: dict with status of locations, e.g., {'A': 'Dirty', 'B': 'Clean'}
+    """
+    if status[location] == 'Dirty':
+        return 'Suck'
+    elif location == 'A':
+        return 'Right'
+    else:
+        return 'Left'
+
+def run_vacuum():
+    # Initial status of the rooms
+    status = {'A': 'Dirty', 'B': 'Dirty'}
+    location = 'A'
+
+    steps = 0
+    max_steps = 10  # avoid infinite loop
+
+    print(f"Initial status: {status}, Starting location: {location}")
+
+    while 'Dirty' in status.values() and steps < max_steps:
+        action = vacuum_cleaner_agent(location, status)
+        print(f"Location: {location}, Status: {status[location]}, Action: {action}")
+
+        if action == 'Suck':
+            status[location] = 'Clean'
+        elif action == 'Right':
+            location = 'B'
+        elif action == 'Left':
+            location = 'A'
+
+        steps += 1
+
+    print(f"Final status: {status}, Steps taken: {steps}")
+
+run_vacuum()
