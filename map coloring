@@ -1,0 +1,41 @@
+def is_valid(assignment, region, color, adjacency):
+    # Check if any adjacent region has the same color
+    for neighbor in adjacency[region]:
+        if neighbor in assignment and assignment[neighbor] == color:
+            return False
+    return True
+
+def backtrack(assignment, regions, colors, adjacency):
+    if len(assignment) == len(regions):
+        return assignment  # All regions assigned
+    
+    # Select an unassigned region (simple heuristic: first unassigned)
+    unassigned = [r for r in regions if r not in assignment]
+    region = unassigned[0]
+    
+    for color in colors:
+        if is_valid(assignment, region, color, adjacency):
+            assignment[region] = color
+            result = backtrack(assignment, regions, colors, adjacency)
+            if result:
+                return result
+            del assignment[region]  # backtrack
+    
+    return None
+
+# Example Map: Australia (regions and adjacency)
+regions = ['WA', 'NT', 'SA', 'Q', 'NSW', 'V', 'T']
+adjacency = {
+    'WA': ['NT', 'SA'],
+    'NT': ['WA', 'SA', 'Q'],
+    'SA': ['WA', 'NT', 'Q', 'NSW', 'V'],
+    'Q': ['NT', 'SA', 'NSW'],
+    'NSW': ['Q', 'SA', 'V'],
+    'V': ['SA', 'NSW'],
+    'T': []  # Tasmania (no adjacency)
+}
+colors = ['Red', 'Green', 'Blue']
+
+solution = backtrack({}, regions, colors, adjacency)
+print("Map coloring solution:")
+print(solution)
