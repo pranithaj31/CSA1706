@@ -1,0 +1,97 @@
+import math
+from collections import Counter
+
+def entropy(data):
+    labels = [row[-1] for row in data]
+    total = len(labels)
+    counts = Counter(labels)
+    ent = 0.0
+    for count in counts.values():
+        p = count / total
+        ent -= p * math.log2(p)
+    return ent
+
+def split_data(data, feature_index, value):
+    return [row for row in data if row[feature_index] == value]
+
+def info_gain(data, feature_index):
+    base_entropy = entropy(data)
+    values = set(row[feature_index] for row in data)
+    total = len(data)
+    weighted_entropy = 0.0
+    for val in values:
+        subset = split_data(data, feature_index, val)
+        weighted_entropy += (len(subset) / total) * entropy(subset)
+    return base_entropy - weighted_entropy
+
+def majority_class(data):
+    labels = [row[-1] for row in data]
+    return Counter(labels).most_common(1)[0][0]
+
+def build_tree(data, features):
+    labels = [row[-1] for row in data]
+    if len(set(labels)) == 1:
+        return labels[0]  # pure node
+    
+    if not features:
+        return majority_class(data)
+    
+    # Select feature with highest info gain
+    gains = [(info_gain(data, i), i) for i in features]
+    best_gain, best_feat = max(gains, key=lambda x: x[0])
+    
+    if best_gain == 0:
+        return majority_class(data)
+    
+    tree = {best_feat: {}}
+    feature_values = set(row[best_feat] for row in data)
+    
+    remaining_features = [f for f in features if f != best_feat]
+    
+    for val in feature_values:
+        subset = split_data(data, best_feat, val)
+        subtree = build_tree(subset, remaining_features)
+        tree[best_feat][val] = subtree
+    
+    return tree
+
+def predict(tree, sample):
+    if not isinstance(tree, dict):
+        return tree
+    feature_index = next(iter(tree))
+    feature_value = sample[feature_index]
+    if feature_value in tree[feature_index]:
+        return predict(tree[feature_index][feature_value], sample)
+    else:
+        # Unknown feature value: return None or handle gracefully
+        return None
+
+# Example usage:
+# Dataset: [feature1, feature2, ..., label]
+dataset = [
+    ['Sunny', 'Hot', 'High', 'False', 'No'],
+    ['Sunny', 'Hot', 'High', 'True', 'No'],
+    ['Overcast', 'Hot', 'High', 'False', 'Yes'],
+    ['Rain', 'Mild', 'High', 'False', 'Yes'],
+    ['Rain', 'Cool', 'Normal', 'False', 'Yes'],
+    ['Rain', 'Cool', 'Normal', 'True', 'No'],
+    ['Overcast', 'Cool', 'Normal', 'True', 'Yes'],
+    ['Sunny', 'Mild', 'High', 'False', 'No'],
+    ['Sunny', 'Cool', 'Normal', 'False', 'Yes'],
+    ['Rain', 'Mild', 'Normal', 'False', 'Yes'],
+    ['Sunny', 'Mild', 'Normal', 'True', 'Yes'],
+    ['Overcast', 'Mild', 'High', 'True', 'Yes'],
+    ['Overcast', 'Hot', 'Normal', 'False', 'Yes'],
+    ['Rain', 'Mild', 'High', 'True', 'No']
+]
+
+features = list(range(len(dataset[0]) - 1))  # indices of features
+
+tree = build_tree(dataset, features)
+
+print("Decision Tree:", tree)
+
+# Predict example:
+sample = ['Sunny', 'Cool', 'High', 'True']
+prediction = predict(tree, sample)
+print("Prediction for", sample, "is:", prediction)
